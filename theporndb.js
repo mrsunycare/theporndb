@@ -36,11 +36,9 @@ app.use(apiLimiter);
 // every week for actor information
 if( process.env.SCRAPE ){
   var scraper  = require(__dirname+'/scrape.js');
-  var pornjson = require(__dirname+'/lib/pornjson.js');
   var scene_manager = require( __dirname + "/lib/scene.js" );
   schedule.scheduleJob('45 */8 * * *',() => {scene_manager.duplicate_check()}); 
   schedule.scheduleJob('5 */8 * * *', () => { scraper.scrape() } );
-  schedule.scheduleJob('5 12 * * 1', () => { pornjson.scrape() } );
 }
 
 MongoClient.connect( process.env.MONGOURL, function(err, client){
