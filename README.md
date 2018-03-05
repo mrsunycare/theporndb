@@ -9,7 +9,7 @@ GET [/api/scenes/](https://theporndb.herokuapp.com/api/scenes/)
 
 **Parameters**
 |Field|Type|Description|
-|---|---|---|---|---|
+|---|---|---|
 |paysite|string|name of paysite. eg: brazzers|
 |title|string|scene title|
 |date|string|scene release date in YYYY-MM-DD format   |
@@ -47,7 +47,7 @@ GET [/api/actors/](https://theporndb.herokuapp.com/api/actors/)
   
 **Parameters**
 |Field|Type|Description|
-|---|---|---|---|---|
+|---|---|---|
 |name|string|actor's name|
 |gender|string|actor's gender|
 |alias|array|array of strings of known aliases|
