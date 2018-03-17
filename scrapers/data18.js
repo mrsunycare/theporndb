@@ -52,22 +52,42 @@ module.exports = function( add_actor, add_scene, get_date, request ){
       $('.bscene.genmed').each(function(){
         var data = {};
         var url = $(this).children('div').first().find('a').attr('href');
+        var text = $(this).text();
+
+        // grab site information in the event that it is stored
+        // as a studio for what ever reason.
+        if( text.indexOf('Studio:') > -1 ){
+          data.site = text.split('Network')[0].match(/Studio:\s(.*)\n?/)[1];
+          data.type = 'movie'; 
+        }
+        if( text.indexOf('Site:') > -1 ){
+          data.site = text.split('Network')[0].match(/Site:\s(.*)\n?/)[1]; 
+        }
+        else{
+          return
+        }
 
         data.title  = $(this).children('p:nth-of-type(2)').text();
-        data.site  = $(this).children('p:nth-of-type(3)').text().replace(/^\w+:\s/,'');
-        data.paysite  = $(this).children('p:nth-of-type(4)').text();
         data.date  = get_date( $(this).find('p.genmed').first().text().replace(/#\d+/g,'') );
-        var actors = $(this).children('p:nth-of-type(5)');
+        data.paysite  = data.site;
+        
+        if( text.indexOf("Cast:") > -1 ){
+          data.actors = text.match(/Cast:\s(.*)\n/)[1].split(/,\s?/);
+        } 
 
+        // check to see if separate network has been defined
+        if( text.indexOf('Network')>-1){
+          data.paysite = text.match(/Network:\s(.*)\n/)[1];
+        }
+
+        // parse actor URLS
+        var actors = $(this).children('p:nth-of-type(5)');
         if( data.paysite.indexOf("Cast: ") > -1 ){
-          data.paysite = data.site;
           actors = $(this).children('p:nth-of-type(4)') ;
         }
-        data.paysite = data.paysite.replace(/^\w+:\s/,'');
-        data.actors = actors.find('a').map( function(){
+        actors.find('a').map( function(){
           get_actor_data($(this).attr('href'),{name:$(this).text().trim()});
-          return $(this).text().trim();
-        }).get()
+        });
         data.data18_id = url.match(/\/(\d+)$/g)[0].replace('/','');
 
         get_scene_data( url, data );
